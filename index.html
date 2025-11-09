@@ -17,7 +17,7 @@
         <!-- View project button -->
         <div class="relative flex items-center justify-center w-full h-screen">
             <div class="relative inline-block">
-                <p class="text-gray-500 font-semibold text-[8rem] z-10">
+                <p id="view-text" class="text-gray-500 font-semibold text-[8rem] z-10">
                     View Projects
                 </p>
                 <button id="view-projects" class="absolute inset-0 z-30 bg-transparent border-none"></button>
@@ -61,13 +61,15 @@
             Close
         </button>
 
-        <!-- Cards section -->
+        <!-- Scroll bar style -->
         <style>
             #Projects::-webkit-scrollbar {width: 8px;}
             #Projects::-webkit-scrollbar-thumb {background-color: #374151; /* gray-700 */ border-radius: 9999px;}
             #Projects::-webkit-scrollbar-track {background: transparent;}
             #Projects {scrollbar-width: thin; scrollbar-color: #374151 transparent;}
         </style>
+
+        <!-- Cards section -->
         <section id="Projects" class="h-[100vh] overflow-y-auto px-12 py-24 pb-[250px]">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
 
@@ -120,15 +122,28 @@
     <script src="./js/physics.js"></script>
     <script src="./js/quotes.js"></script>
 
+    <!-- Switch sections + drag -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // --- document elements ---
             const viewBtn = document.getElementById("view-projects");
             const closeBtn = document.getElementById("close-projects");
             const overlay = document.getElementById("projects-overlay");
             const canvasWrapper = document.getElementById("canvas-wrapper");
             const reloadBtn = document.getElementById("reload-quote");
+            const viewText = document.getElementById("view-text");
 
-            viewBtn.addEventListener("click", () => {
+            let viewTextAni = gsap.to(viewText, { // Hover animation
+                color: "#d0d0d0",
+                duration: 0.5,
+                paused: true
+            });
+
+            // Hover handlers
+            viewBtn.addEventListener("mouseenter", () => { viewTextAni.play();  });
+            viewBtn.addEventListener("mouseleave", () => { viewTextAni.reverse(); });
+
+            viewBtn.addEventListener("click", () => { // Open projects
                 overlay.classList.remove("hidden");
                 gsap.to(canvasWrapper, { 
                     filter: "blur(2px) brightness(0.8)", 
@@ -138,7 +153,7 @@
                 gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5 });
             });
 
-            closeBtn.addEventListener("click", () => {
+            closeBtn.addEventListener("click", () => { // Close projects
                 gsap.to(canvasWrapper, { 
                     filter: "blur(0px) brightness(1)", 
                     duration: 0.5,
